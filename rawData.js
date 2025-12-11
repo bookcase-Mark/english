@@ -1,4 +1,4 @@
-[
+let rawData = [
 {"word":"dog","phonetic":"/d??g/","pos":"n.","meaning":"狗","sentence":"The dog is barking loudly.","translation":"那只狗叫得很大声。"},
 {"word":"cat","phonetic":"/k?t/","pos":"n.","meaning":"猫","sentence":"The cat is sleeping on the sofa.","translation":"猫正在沙发上睡觉。"},
 {"word":"you","phonetic":"/ju?/","pos":"pron.","meaning":"你;你们","sentence":"Nice to meet you.","translation":"很高兴见到你。"},
@@ -353,3 +353,4 @@
 
 
 ]
+
