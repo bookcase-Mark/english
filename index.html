@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>English Mastery | 英语核心词汇</title>
     <link rel="stylesheet" href="./index.css">
     <script src="./rawData.js"></script>
@@ -12,28 +12,22 @@
 <div class="container">
     <header>
         <h1>English Core Vocabulary</h1>
-        <div class="subtitle">高效记忆 · 纯正发音 · 游戏化复习</div>
+        <div class="subtitle">高效记忆 · 纯正发音 · 列表复习</div>
     </header>
 
     <div class="controls-card">
         <input type="text" id="searchInput" class="search-box" placeholder="搜索单词、释义 (Search)...">
         
-        <select id="pageSizeSelect" class="search-box">
+        <select id="pageSizeSelect" class="search-box" style="flex: 0 0 auto; width: auto;">
             <option value="20">20 条/页</option>
             <option value="50">50 条/页</option>
             <option value="100">100 条/页</option>
         </select>
 
-        <label style="display:flex;  gap:8px; cursor:pointer; user-select:none;">
+        <label style="display:flex; gap:8px; cursor:pointer; user-select:none; align-items:center;">
             <input type="checkbox" id="hideMarkedCheckbox">
             <span style="font-size:0.9rem; color:var(--text-light)">隐藏已掌握</span>
         </label>
-
-        <div style="flex:1"></div>
-
-        <button class="btn btn-accent" onclick="openWheel()">
-            <span style="font-size:1.2rem">🎡</span> 进入超级转盘
-        </button>
     </div>
 
     <div class="table-wrapper">
@@ -58,53 +52,6 @@
     </div>
 </div>
 
-<div id="wheelOverlay" class="wheel-overlay">
-    
-    <div class="wheel-controls">
-        <div style="display:flex; gap:15px; align-items:center;">
-            <div class="mode-switch">
-                <button class="mode-btn active" onclick="setWheelMode('en_cn')" id="modeEnCn">英 ➜ 中</button>
-                <button class="mode-btn" onclick="setWheelMode('cn_en')" id="modeCnEn">中 ➜ 英</button>
-            </div>
-            <button class="btn btn-outline" style="color:white; border-color:rgba(255,255,255,0.4); padding:6px 15px; font-size:0.9rem;" onclick="refreshWheelRandomly()">
-                🔄 换一批
-            </button>
-        </div>
-        <div class="close-wheel" onclick="closeWheel()"></div>
-    </div>
-
-    <div class="wheel-stage">
-        <div class="wheel-pointer"></div>
-        <canvas id="wheelCanvas" width="1000" height="1000"></canvas>
-        <button id="spinBtn" class="spin-trigger" onclick="spinWheel()">SPIN</button>
-    </div>
-
-    <div id="flashcard" class="flashcard">
-        <div style="text-align:right;">
-             <span class="speaker-icon" style="font-size:1.5rem;" onclick="speakCurrentCard()">🔊</span>
-        </div>
-        <div id="cardQuestion" class="card-question">Word</div>
-        <div id="cardHint" class="card-hint">Hint</div>
-        
-        <div class="answer-mask" onclick="revealAnswer()">
-            <div class="eye-icon"><span>👁️</span> <span>点击查看答案</span></div>
-            <div id="cardAnswer" class="answer-content"></div>
-        </div>
-
-        <div class="card-actions">
-            <button class="action-btn" style="background:#f1f5f9; color:#64748b;" onclick="cardAction('miss')">
-                没记住
-            </button>
-            <button class="action-btn" style="background:var(--primary); color:white; box-shadow:0 4px 10px rgba(16,185,129,0.3);" onclick="cardAction('got')">
-                记住了 (移除)
-            </button>
-        </div>
-    </div>
-
-    <div class="custom-add-area">
-        <span id="wheelStats">加载中...</span>
-    </div>
-    <script src="./index.js"></script>
-</div>
+<script src="./index.js"></script>
 </body>
 </html>
