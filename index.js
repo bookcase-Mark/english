@@ -8,12 +8,22 @@ let markedWords = new Set(JSON.parse(localStorage.getItem('vocab_marked') || '[]
 let currentPage = 1;
 let itemsPerPage = 20;
 
+// 语音相关变量
+let preferredVoice = null;
+let voices = [];
+
 // -------------------------------------------------------------------------
 // 初始化与基础功能
 // -------------------------------------------------------------------------
 function init() {
     processData();
     applyFilters();
+    
+    // 初始化语音（浏览器加载语音列表是异步的，需要监听）
+    initVoices();
+    if (window.speechSynthesis && window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = initVoices;
+    }
 
     document.getElementById('searchInput').addEventListener('input', () => { currentPage=1; applyFilters(); });
     document.getElementById('hideMarkedCheckbox').addEventListener('change', () => { currentPage=1; applyFilters(); });
@@ -22,6 +32,33 @@ function init() {
         currentPage = 1;
         renderTable();
     });
+}
+
+// 自动寻找最“真人”的语音包
+function initVoices() {
+    if (!window.speechSynthesis) return;
+    
+    // 获取所有可用语音
+    voices = window.speechSynthesis.getVoices();
+    
+    // 筛选策略：优先找"Natural"(自然)、"Google"(谷歌)、"Enhanced"(增强)等关键词的英语语音
+    // 这些通常是云端优化过或系统自带的高级语音
+    const voicePriorities = [
+        v => v.name.includes("Google US English"),       // Chrome/Android 常用高质量语音
+        v => v.name.includes("Natural") && v.lang.includes("en-US"), // Edge/Windows 高级自然语音
+        v => v.name.includes("Samantha"),                // macOS/iOS 常用好听语音
+        v => v.name.includes("Enhanced") && v.lang.includes("en"), // iOS 增强语音
+        v => v.lang === "en-US" && v.default             // 兜底：默认美式英语
+    ];
+
+    for (let check of voicePriorities) {
+        const found = voices.find(check);
+        if (found) {
+            preferredVoice = found;
+            console.log("已激活语音:", found.name); // 可以在控制台看到实际选用了哪个
+            break;
+        }
+    }
 }
 
 function processData() {
@@ -105,12 +142,30 @@ window.toggleMark = function(word) {
     applyFilters(); 
 }
 
+// -------------------------------------------------------------------------
+// 优化后的朗读功能
+// -------------------------------------------------------------------------
 window.speak = function(text) {
     if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
+    
+    // 如果还没加载到语音，尝试再次加载
+    if (!preferredVoice) initVoices();
+
+    window.speechSynthesis.cancel(); // 打断当前正在说的
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US'; 
-    utterance.rate = 1.0;     
+    
+    // 应用选中的最佳语音
+    if (preferredVoice) {
+        utterance.voice = preferredVoice;
+        utterance.lang = preferredVoice.lang; // 确保语言匹配
+    } else {
+        utterance.lang = 'en-US'; // 兜底
+    }
+
+    // 微调参数：0.9 的语速通常比默认 1.0 更适合语言学习，听起来更清晰沉稳
+    utterance.rate = 0.9; 
+    utterance.pitch = 1.0; 
+    
     window.speechSynthesis.speak(utterance);
 }
 
@@ -131,5 +186,4 @@ function updatePagination() {
     document.getElementById('nextBtn').disabled = (currentPage === max);
 }
 
-// 启动
 init();
