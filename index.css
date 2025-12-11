@@ -1,0 +1,445 @@
+:root {
+    /* 保持原有配色变量不变 */
+    --primary: #5e8b7e;
+    --primary-dark: #3a5a50;
+    --accent: #d97757;
+    --bg-body: #f7f6f2;
+    --bg-card: #ffffff;
+    --text-main: #2c3e50;
+    --text-light: #7f8c8d;
+    --border: #e0e0e0;
+    --shadow: 0 4px 20px rgba(0,0,0,0.05);
+    --radius: 12px;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    margin: 0;
+    padding: 15px; /* 移动端减小边距 */
+    line-height: 1.6;
+}
+
+.container { max-width: 1100px; margin: 0 auto; padding-bottom: 80px; }
+
+/* --- 头部 --- */
+header { text-align: center; margin-bottom: 20px; padding: 20px 0; }
+h1 { color: var(--primary-dark); margin: 0; font-size: 1.8rem; letter-spacing: -0.5px; }
+.subtitle { color: var(--text-light); margin-top: 5px; font-weight: 300; font-size: 0.9rem; }
+
+/* --- 控制栏 --- */
+.controls-card {
+    background: var(--bg-card);
+    padding: 15px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 20px;
+    position: sticky;
+    top: 10px;
+    z-index: 90;
+    border: 1px solid var(--border);
+}
+
+.search-box {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-size: 16px; /* 防止iOS缩放 */
+    background: #fafafa;
+}
+
+/* 移动端控制栏适配 */
+@media (max-width: 600px) {
+    .controls-card { flex-direction: column; align-items: stretch; }
+    .search-box { width: 100%; }
+    .btn-accent { width: 100%; justify-content: center; }
+}
+
+/* --- 按钮样式 --- */
+.btn {
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+}
+.btn:active { transform: scale(0.96); }
+.btn-accent { background: var(--accent); color: white; }
+.btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-light); }
+
+/* --- 表格区域 (桌面端保持，移动端重构) --- */
+.table-wrapper {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+table { width: 100%; border-collapse: collapse; }
+th { background: #f8fafc; text-align: left; padding: 15px; font-weight: 600; color: var(--text-light); font-size: 0.85rem; border-bottom: 2px solid var(--border); }
+td { padding: 15px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+
+/* 单词列样式 */
+.word-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.word-text { font-size: 1.15rem; font-weight: 700; color: var(--primary-dark); }
+.phonetic-text { color: var(--text-light); font-size: 0.85rem; font-family: sans-serif; margin-top: 2px; }
+.pos-badge { background: #edf2f7; color: #4a5568; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+
+/* 移动端表格 -> 卡片视图 */
+@media (max-width: 768px) {
+    .table-wrapper { background: transparent; box-shadow: none; border: none; overflow: visible; }
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display: none; } /* 隐藏表头 */
+
+    tr {
+        background: white;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border: 1px solid var(--border);
+        padding: 15px;
+        position: relative;
+        display: grid;
+        grid-template-columns: 50px 1fr; /* 左侧打钩，右侧内容 */
+        grid-template-areas: 
+            "check word"
+            "check meaning"
+            "check sentence";
+        gap: 5px 10px;
+    }
+
+    /* 重新布局各单元格 */
+    td { padding: 0; border: none; }
+    
+    /* 1. 状态勾选栏 */
+    td:nth-child(1) { grid-area: check; display: flex; align-items: flex-start; justify-content: center; padding-top: 5px; }
+    
+    /* 2. 单词栏 */
+    td:nth-child(2) { grid-area: word; margin-bottom: 4px; }
+    
+    /* 3. 词性 (合并到单词行显示或单独显示，这里我们稍微特殊处理 JS 让结构更清晰，或者用 CSS 调整) */
+    td:nth-child(3) { display: inline-block; grid-area: word; justify-self: end; align-self: start; }
+    
+    /* 4. 释义 */
+    td:nth-child(4) { grid-area: meaning; font-weight: 500; color: #444; margin-bottom: 8px; line-height: 1.4; }
+    
+    /* 5. 例句 */
+    td:nth-child(5) { grid-area: sentence; background: #f9f9f9; padding: 8px; border-radius: 6px; font-size: 0.9rem; }
+}
+
+/* 已掌握样式 */
+tr.marked .word-text { text-decoration: line-through; opacity: 0.5; }
+tr.marked { background-color: #f0fdf4; }
+
+.check-btn {
+    width: 36px; height: 36px; /* 增大触控区域 */
+    border-radius: 50%; border: 2px solid var(--border);
+    background: white; color: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; transition: 0.2s;
+}
+.check-btn.active { background: #10b981; border-color: #10b981; color: white; }
+
+.speaker-icon { font-size: 1.2rem; padding: 5px; cursor: pointer; }
+
+/* --- 分页 --- */
+.pagination { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
+
+
+/* =========================================
+   以下为转盘与答题卡核心修复与优化
+   ========================================= */
+
+/* --- 全屏转盘模态框 --- */
+.wheel-overlay {
+    display: none;
+    position: fixed;
+    inset: 0; /* 替代 top/left/width/height，强制填满视口 */
+    background: #2c3e50;
+    z-index: 2000; /* 确保极高层级 */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* 禁止内部溢出 */
+}
+
+/* 顶部控制栏 */
+.wheel-controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2001; /* 比遮罩层更高 */
+    pointer-events: none; /* 让点击穿透空白区域 */
+}
+
+/* 【修复3：移动端适配】小屏幕下减小顶部内边距 */
+@media (max-width: 600px) {
+    .wheel-controls { padding: 10px 15px; }
+}
+
+/* 让内部按钮可点击 */
+.wheel-controls > * {
+    pointer-events: auto;
+}
+
+.mode-switch {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    padding: 6px;
+    border-radius: 30px;
+    display: flex;
+    gap: 8px;
+}
+
+.mode-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+.mode-btn.active { background: var(--accent); color: white; font-weight: bold; }
+
+/* --- 关闭按钮 - 现代极简设计 --- */
+.close-wheel {
+    position: relative; /* 为内部的十字线定位 */
+    width: 42px;
+    height: 42px;
+    /* 背景：轻透的毛玻璃效果 */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); /* 兼容 Safari */
+    border-radius: 50%;
+    cursor: pointer;
+    /* 边框与阴影：极细的亮边框和柔和的投影增加层次感 */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    /* 弹性布局使内部线条居中 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 平滑过渡动画 */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* 使用 CSS 伪元素绘制精致的细十字线 */
+.close-wheel::before,
+.close-wheel::after {
+    content: '';
+    position: absolute;
+    width: 22px; /* 线条长度 */
+    height: 2px;  /* 线条粗细 */
+    background-color: rgba(255, 255, 255, 0.8); /* 默认线条颜色：柔和米白 */
+    border-radius: 2px; /* 线条圆角 */
+    transition: all 0.3s ease;
+}
+
+/* 旋转线条形成叉号 */
+.close-wheel::before { transform: rotate(45deg); }
+.close-wheel::after { transform: rotate(-45deg); }
+
+/* --- 交互效果 --- */
+/* 悬停 (Hover) */
+.close-wheel:hover {
+    background: rgba(255, 255, 255, 0.25); /* 背景变亮 */
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.08) rotate(90deg); /* 轻微放大并优雅旋转 90度 */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* 阴影加深 */
+}
+
+.close-wheel:hover::before,
+.close-wheel:hover::after {
+    background-color: #ffffff; /* 悬停时线条变为纯白高亮 */
+}
+
+/* 点击 (Active) */
+.close-wheel:active {
+    transform: scale(0.95) rotate(90deg); /* 点击时轻微回弹 */
+    background: rgba(255, 255, 255, 0.1);
+    transition-duration: 0.1s; /* 点击反馈要快 */
+}
+
+/* 转盘舞台 - 尺寸限制优化 */
+.wheel-stage {
+    position: relative;
+    width: 90vw;
+    height: 90vw;
+    /* 关键：限制最大尺寸，防止PC端撑出滚动条 */
+    max-width: 550px; 
+    max-height: 550px;
+    margin-top: 20px;
+    flex-shrink: 0; /* 防止被挤压 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: margin-top 0.3s;
+}
+
+/* 【修复3：移动端适配】针对矮屏幕(横屏手机或小手机)的优化，减少垂直间距 */
+@media (max-height: 700px) or (max-width: 600px) {
+    .wheel-stage {
+        width: 82vh;  /* 稍微减小一点比例 */
+        height: 82vh;
+        max-width: 450px;
+        max-height: 450px;
+        margin-top: 10px; /* 减小与顶部的间距 */
+    }
+}
+
+canvas#wheelCanvas {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 50px;
+    background: #e74c3c;
+    clip-path: polygon(100% 0, 50% 100%, 0 0);
+    z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.spin-trigger {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    background: white;
+    border: 4px solid var(--accent);
+    color: var(--accent);
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    z-index: 20;
+    transition: 0.2s;
+}
+.spin-trigger:hover { transform: translate(-50%, -50%) scale(1.1); }
+.spin-trigger:disabled { background: #e2e8f0; border-color: #94a3b8; color: #94a3b8; cursor: not-allowed; }
+
+/* 底部统计信息 */
+.custom-add-area {
+    margin-top: 20px;
+    background: rgba(0,0,0,0.3);
+    padding: 8px 20px;
+    border-radius: 20px;
+    color: rgba(255,255,255,0.9);
+    font-size: 0.9rem;
+    pointer-events: none;
+    transition: margin-top 0.3s;
+}
+/* 【修复3：移动端适配】小屏幕减小底部间距 */
+@media (max-height: 700px) or (max-width: 600px) {
+    .custom-add-area { margin-top: 10px; }
+}
+
+
+/* =========================================
+   【关键修复 1 & 2】答题卡与遮罩层样式补全
+   ========================================= */
+.flashcard {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%; max-width: 400px;
+    background: white; padding: 25px;
+    border-radius: 20px; text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    opacity: 0; pointer-events: none; 
+    z-index: 2010; /* 确保比 overlay 高 */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.flashcard.show { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+
+.card-question { font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: 5px; }
+.card-hint { color: var(--text-light); font-size: 0.9rem; margin-bottom: 20px; font-style: italic; }
+
+/* 遮罩层容器 - 修复核心 */
+.answer-mask {
+    position: relative;
+    background: #f1f5f9; /* 遮挡时的灰色背景 */
+    border-radius: 12px;
+    min-height: 120px; /* 给一个最小高度，确保小眼睛垂直居中 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden; /* 隐藏溢出的内容 */
+    transition: all 0.3s ease;
+    border: 2px dashed #cbd5e1; /* 虚线边框提示可点击 */
+    margin-bottom: 20px;
+}
+
+/* 小眼睛图标 */
+.eye-icon {
+    position: absolute; /* 绝对定位浮在上面 */
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: var(--primary); font-weight: 600;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+/* 答案内容容器 */
+.answer-content {
+    opacity: 0; /* 初始透明 */
+    visibility: hidden; /* 初始不可见，不占位 */
+    padding: 20px;
+    transition: all 0.3s ease;
+    /* 绝对定位，初始状态躲在小眼睛后面 */
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+}
+
+/* --- 揭晓答案后的状态 (由 JS 添加 .revealed 类触发) --- */
+.answer-mask.revealed {
+    background: transparent; /* 背景变透明 */
+    border-style: solid; border-color: transparent; /* 边框消失 */
+    cursor: default;
+}
+
+.answer-mask.revealed .eye-icon {
+    opacity: 0; transform: scale(0.8); /* 小眼睛消失 */
+}
+
+.answer-mask.revealed .answer-content {
+    opacity: 1; visibility: visible; position: relative; /* 答案显现，恢复相对定位撑开高度 */
+}
+
+.card-actions {
+    display: flex; gap: 15px; justify-content: center;
+}
+
+.action-btn {
+    flex: 1; padding: 12px; border: none; border-radius: 10px;
+    font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: 0.2s;
+}
+.action-btn:active { transform: scale(0.97); }
