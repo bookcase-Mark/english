@@ -1,57 +1,173 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>English Mastery | 英语核心词汇</title>
-    <link rel="stylesheet" href="./index.css">
-    <script src="./rawData.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>English Mastery · 核心词汇</title>
+  <meta name="description" content="英语核心词汇 · 例句朗读 · 游戏化复习 · 超级转盘" />
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-
-<div class="container">
-    <header>
-        <h1>English Core Vocabulary</h1>
-        <div class="subtitle">高效记忆 · 纯正发音 · 列表复习</div>
-    </header>
-
-    <div class="controls-card">
-        <input type="text" id="searchInput" class="search-box" placeholder="搜索单词、释义 (Search)...">
-        
-        <select id="pageSizeSelect" class="search-box" style="flex: 0 0 auto; width: auto;">
-            <option value="20">20 条/页</option>
-            <option value="50">50 条/页</option>
-            <option value="100">100 条/页</option>
-        </select>
-
-        <label style="display:flex; gap:8px; cursor:pointer; user-select:none; align-items:center;">
-            <input type="checkbox" id="hideMarkedCheckbox">
-            <span style="font-size:0.9rem; color:var(--text-light)">隐藏已掌握</span>
-        </label>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">EN</div>
+        <div>
+          <h1>English Mastery</h1>
+          <p>高效记忆 · 纯正发音 · 游戏化复习</p>
+        </div>
+      </div>
+      <button class="btn btn-accent" id="openWheelBtn" aria-label="进入超级转盘">🎡 超级转盘</button>
     </div>
 
-    <div class="table-wrapper">
-        <table id="vocabTable">
-            <thead>
-                <tr>
-                    <th style="width: 80px; text-align:center;">状态</th>
-                    <th style="width: 25%">单词 / 音标</th>
-                    <th style="width: 10%">词性</th>
-                    <th style="width: 25%">释义</th>
-                    <th style="width: 40%">例句</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
+    <section class="hero">
+      <div class="hero-row">
+        <div>
+          <h2>今天学一点点，明天就会不一样</h2>
+          <p class="sub">搜索单词/释义/例句；标记已掌握；点击小喇叭朗读单词和例句；转盘模式用于随机复习。</p>
+          <div class="pills" aria-label="学习统计">
+            <div class="pill">总词汇 <strong id="statTotal">0</strong></div>
+            <div class="pill">已掌握 <strong id="statMastered">0</strong></div>
+            <div class="pill">待复习 <strong id="statLeft">0</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="控制栏">
+      <div class="controls-grid">
+        <div class="field span-2">
+          <div class="label">搜索</div>
+          <input id="searchInput" class="input" type="text" placeholder="搜索单词、释义、例句（Search...）" />
+        </div>
+
+        <div class="field">
+          <div class="label">每页条数</div>
+          <select id="pageSizeSelect" class="select">
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="label">口音</div>
+          <select id="accentSelect" class="select" title="口音/语言">
+            <option value="en-US">English (US)</option>
+            <option value="en-GB">English (UK)</option>
+            <option value="en-AU">English (AU)</option>
+            <option value="en-CA">English (CA)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="label">朗读声音（更自然）</div>
+          <select id="voiceSelect" class="select" title="选择可用朗读声音"></select>
+        </div>
+
+        <div class="field">
+          <div class="label">隐藏已掌握</div>
+          <label class="switch">
+            <input type="checkbox" id="hideMarkedCheckbox" />
+            <span style="color:var(--muted);font-weight:800;">隐藏</span>
+          </label>
+        </div>
+
+        <div class="field">
+          <div class="label">语速 <span id="rateValue"></span></div>
+          <input id="rateRange" class="input" type="range" min="0.6" max="1.25" step="0.01" />
+        </div>
+
+        <div class="field">
+          <div class="label">音高 <span id="pitchValue"></span></div>
+          <input id="pitchRange" class="input" type="range" min="0.7" max="1.2" step="0.01" />
+        </div>
+
+        <div class="field" style="align-self:end;">
+          <button class="btn btn-primary span-2" id="testVoiceBtn" aria-label="测试朗读">🔊 测试朗读</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="table-card" aria-label="词汇表">
+      <table id="vocabTable">
+        <thead>
+          <tr>
+            <th style="width: 84px; text-align:center;">状态</th>
+            <th style="width: 28%;">单词 / 音标</th>
+            <th style="width: 12%;">词性</th>
+            <th style="width: 22%;">释义</th>
+            <th>例句</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </section>
+
+    <div class="pagination" aria-label="分页">
+      <button class="btn btn-ghost" id="prevBtn">← Previous</button>
+      <div id="pageInfo">Page 1</div>
+      <button class="btn btn-ghost" id="nextBtn">Next →</button>
+    </div>
+  </div>
+
+  <!-- Wheel Overlay -->
+  <div id="wheelOverlay" class="wheel-overlay" aria-hidden="true">
+    <div class="wheel-controls">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div class="mode-switch" role="tablist" aria-label="转盘模式">
+          <button class="mode-btn active" id="modeEnCn" role="tab" aria-selected="true">英 ➜ 中</button>
+          <button class="mode-btn" id="modeCnEn" role="tab" aria-selected="false">中 ➜ 英</button>
+        </div>
+        <button class="btn btn-ghost" id="refreshWheelBtn" style="border-color:rgba(255,255,255,.25);color:#fff;background:rgba(255,255,255,.10);">
+          🔄 换一批
+        </button>
+      </div>
+      <button class="wheel-close" id="closeWheelBtn" aria-label="关闭">&times;</button>
     </div>
 
-    <div class="pagination">
-        <button class="btn btn-outline" id="prevBtn" onclick="changePage(-1)">Previous</button>
-        <span id="pageInfo">Page 1</span>
-        <button class="btn btn-outline" id="nextBtn" onclick="changePage(1)">Next</button>
+    <div class="wheel-stage">
+      <div class="wheel-pointer"></div>
+      <canvas id="wheelCanvas" width="1000" height="1000"></canvas>
+      <button id="spinBtn" class="spin-trigger">SPIN</button>
     </div>
-</div>
 
-<script src="./index.js"></script>
+    <div id="flashcard" class="flashcard" role="dialog" aria-modal="true" aria-label="复习卡片">
+      <div class="fc-top">
+        <div class="fc-actions">
+          <button class="icon-btn" id="speakWordBtn" title="朗读单词" aria-label="朗读单词">
+            <svg class="spk" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10v4a2 2 0 0 0 2 2h3l4 3a1 1 0 0 0 1.6-.8V5.8A1 1 0 0 0 12 5l-4 3H5a2 2 0 0 0-2 2Zm14.5 2a4.5 4.5 0 0 0-2.2-3.9 1 1 0 1 0-1 1.7 2.5 2.5 0 0 1 0 4.4 1 1 0 1 0 1 1.7A4.5 4.5 0 0 0 17.5 12Zm2.7 0a7.2 7.2 0 0 0-3.6-6.2 1 1 0 0 0-1 1.7 5.2 5.2 0 0 1 0 9 1 1 0 1 0 1 1.7 7.2 7.2 0 0 0 3.6-6.2Z"/>
+            </svg>
+          </button>
+          <button class="icon-btn" id="speakSentenceBtn" title="朗读例句" aria-label="朗读例句">
+            <svg class="spk" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 10v4a2 2 0 0 0 2 2h3l4 3a1 1 0 0 0 1.6-.8V5.8A1 1 0 0 0 12 5l-4 3H5a2 2 0 0 0-2 2Zm14.5 2a4.5 4.5 0 0 0-2.2-3.9 1 1 0 1 0-1 1.7 2.5 2.5 0 0 1 0 4.4 1 1 0 1 0 1 1.7A4.5 4.5 0 0 0 17.5 12Zm2.7 0a7.2 7.2 0 0 0-3.6-6.2 1 1 0 0 0-1 1.7 5.2 5.2 0 0 1 0 9 1 1 0 1 0 1 1.7 7.2 7.2 0 0 0 3.6-6.2Z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="cardQuestion" class="fc-title">Word</div>
+      <div id="cardHint" class="fc-hint">Hint</div>
+
+      <div class="answer-mask" id="revealBtn" tabindex="0" role="button" aria-label="点击查看答案">
+        <div class="eye-icon">👁️ 点击查看答案</div>
+        <div id="cardAnswer" class="answer-content"></div>
+      </div>
+
+      <div class="fc-bottom">
+        <button class="fc-miss" id="missBtn">没记住</button>
+        <button class="fc-got" id="gotBtn">记住了（移除）</button>
+      </div>
+    </div>
+
+    <div class="wheel-stats"><span id="wheelStats">加载中...</span></div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="./words.js"></script>
+  <script src="./app.js" defer></script>
 </body>
 </html>
