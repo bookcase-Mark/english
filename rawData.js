@@ -355,7 +355,6 @@
 {"word":"horse","phonetic":"/hɔːrs/","pos":"n.","meaning":"马","sentence":"He can ride a horse.","translation":"他会骑马。"},
 {"word":"grass","phonetic":"/ɡræs/","pos":"n.","meaning":"草地，草","sentence":"The children are playing on the grass.","translation":"孩子们正在草地上玩耍。"},
 {"word":"flower","phonetic":"/ˈflaʊər/","pos":"n.","meaning":"花","sentence":"What is your favorite flower?","translation":"你最喜欢什么花？"},
-[
 {"word":"chat","phonetic":"/tʃæt/","pos":"v., n.","meaning":"聊天","sentence":"We had a nice chat.","translation":"我们聊得很愉快。"},
 {"word":"street","phonetic":"/striːt/","pos":"n.","meaning":"街道","sentence":"The street is busy.","translation":"这条街很热闹。"},
 {"word":"walk","phonetic":"/wɔːk/","pos":"v., n.","meaning":"走，散步","sentence":"He is walking to school.","translation":"他正走着去学校。"},
