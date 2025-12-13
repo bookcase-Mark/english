@@ -1,4 +1,4 @@
-[
+let = rawData[
 {"word":"dog","phonetic":"/dɔɡ/","pos":"n.","meaning":"狗","sentence":"The dog is barking.","translation":"这只狗在叫。"},
 {"word":"cat","phonetic":"/kæt/","pos":"n.","meaning":"猫","sentence":"I have a cute cat.","translation":"我有一只可爱的猫。"},
 {"word":"you","phonetic":"/juː/","pos":"pron.","meaning":"你，你们","sentence":"Nice to meet you.","translation":"很高兴见到你。"},
@@ -397,3 +397,4 @@
 {"word":"knife","phonetic":"/naɪf/","pos":"n.","meaning":"刀","sentence":"The knife is sharp.","translation":"刀很锋利。"},
 
 ]
+
